@@ -1,12 +1,47 @@
 import React from 'react';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/App';
 import rootReducer from './reducers';
 
 
-const store = createStore(rootReducer);
+// function logger(obj, next, action)
+// logger(obj)(next)
+// using currying
+// const logger = function({dispatch, getState}){
+//   return function (next){
+//     return function(action){
+//       // middleware
+//       console.log('ACTION_TYPE =', action.type);
+//       next(action);
+//     }
+//   }
+// }
+
+
+// using middleware way
+const logger = ({dispatch, getState})=> (next)=> (action)=> {
+  // logger code
+  // if(typeof action !== 'function'){
+  //   // console.log('ACTION_TYPE =', action.type);
+  //   next(action);
+  // }
+  next(action);
+}
+
+
+// const thunk = ({dispatch, getState})=> (next)=> (action)=> {
+//   // logger code
+//   // console.log('ACTION_TYPE =', action.type);
+//       if(typeof action==='function'){
+//         action(dispatch)
+//       }
+//       next(action);
+// }
+
+const store = createStore(rootReducer, applyMiddleware(logger, thunk));
 // console.log('store', store);
 // console.log('Brfore State', store.getState());
 
